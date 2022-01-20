@@ -10,7 +10,8 @@ def sortSamePlaceValueNums(numbers) :
     pivot = numbers[0]
     tail = numbers[1:]
     leftSide = [num for num in tail if concatenateInts(num, pivot) > concatenateInts(pivot, num)]
-    rightSide = list(set(numbers)-set([pivot])-set(leftSide))
+    # rightSide = list(set(numbers)-set([pivot])-set(leftSide))
+    rightSide = [num for num in tail if concatenateInts(num, pivot) <= concatenateInts(pivot, num)]
     # 재귀, leftSide를 정렬한 값 + pivot + rightSide를 정렬한 값을 return
     return sortSamePlaceValueNums(leftSide) + [pivot] + sortSamePlaceValueNums(rightSide)
 
@@ -27,8 +28,9 @@ def solution(numbers) :
         while idx < len(numbers)-1 :
             # 만약 앞자리수가 같은 number가 있다면 같은 앞자리수를 가진 모든 number를 sortSamePlaceValueNums로 정렬
             if str(numbers[idx])[0] == str(numbers[idx+1])[0] :
-                samePlaceValueNums = [num for num in numbers[idx:] if str(num)[0]==str(numbers[idx])[0]]
-                numbers = numbers[:numbers.index(samePlaceValueNums[0])] + sortSamePlaceValueNums(samePlaceValueNums) + numbers[numbers.index(samePlaceValueNums[-1])+1:]
+                samePlaceValueIdxs = [i+idx for i, num in enumerate(numbers[idx:]) if str(num)[0]==str(numbers[idx])[0]]
+                samePlaceValueNums = [numbers[i] for i in samePlaceValueIdxs]
+                numbers = numbers[:samePlaceValueIdxs[0]] + sortSamePlaceValueNums(samePlaceValueNums) + numbers[samePlaceValueIdxs[-1]+1:]
 
                 idx += len(samePlaceValueNums)
                 continue
